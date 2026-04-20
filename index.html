@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Influencer Model — Instagram Carousel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+
+        .page-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #818cf8, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .page-header p {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .page-header .instructions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            color: #a5b4fc;
+            font-size: 0.85rem;
+        }
+
+        .download-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .download-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .slides-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .slide-wrapper {
+            position: relative;
+        }
+
+        .slide-number-label {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .download-btn {
+            position: absolute;
+            top: 16px;
+            right: -60px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .download-btn:hover {
+            background: rgba(99, 102, 241, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* ===== SLIDE BASE ===== */
+        .slide {
+            width: 1080px;
+            height: 1350px;
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px;
+        }
+
+        .slide .watermark {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 16px;
+            color: rgba(255,255,255,0.25);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .slide .slide-counter {
+            position: absolute;
+            top: 40px;
+            right: 50px;
+            font-size: 16px;
+            color: rgba(255,255,255,0.3);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* ===== SLIDE 1 — COVER ===== */
+        .slide-1 {
+            background: linear-gradient(160deg, #0f0c29 0%, #1a1145 30%, #302b63 60%, #24243e 100%);
+            text-align: center;
+        }
+
+        .slide-1::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .slide-1::after {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            left: -150px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .slide-1 .emoji-top {
+            font-size: 80px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-1 h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #fff 30%, #c4b5fd 70%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-1 .subtitle {
+            font-size: 28px;
+            color: #94a3b8;
+            font-weight: 400;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+        }
+
+        .slide-1 .cta {
+            margin-top: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 60px;
+            font-size: 20px;
+            color: #c4b5fd;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== SLIDE 2 — WHAT IS IT ===== */
+        .slide-2 {
+            background: linear-gradient(160deg, #0c1220 0%, #111827 50%, #1e1b4b 100%);
+            text-align: left;
+            align-items: flex-start;
+            padding: 80px 90px;
+        }
+
+        .slide-2 .tag {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #a5b4fc;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .slide-2 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 54px;
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .slide-2 .definition {
+            font-size: 26px;
+            line-height: 1.7;
+            color: #cbd5e1;
+            margin-bottom: 50px;
+            border-left: 4px solid #6366f1;
+            padding-left: 30px;
+        }
+
+        .slide-2 .features {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .slide-2 .feature {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 28px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+        }
+
+        .slide-2 .feature .icon {
+            font-size: 32px;
+            width: 50px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .slide-2 .feature .text {
+            font-size: 22px;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        /* ===== SLIDE 3 — MARKET SIZE ===== */
+        .slide-3 {
+            background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            text-align: left;
+            align-items: flex-start;
+            padding: 80px 90px;
+        }
+
+        .slide-3 .tag {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #86efac;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .slide-3 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 50px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            color: #fff;
+        }
+
+        .slide-3 .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .slide-3 .stat-card {
+            padding: 36px 30px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .slide-3 .stat-card .number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .slide-3 .stat-card .number.green { color: #4ade80; }
+        .slide-3 .stat-card .number.purple { color: #a78bfa; }
+        .slide-3 .stat-card .number.blue { color: #60a5fa; }
+        .slide-3 .stat-card .number.pink { color: #f472b6; }
+
+        .slide-3 .stat-card .label {
+            font-size: 18px;
+            color: #94a3b8;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* ===== SLIDE 4 — MONETIZATION ===== */
+        .slide-4 {
+            background: linear-gradient(160deg, #0c1220 0%, #1a0f2e 50%, #1e1b4b 100%);
+            text-align: left;
+            align-items: flex-start;
+            padding: 70px 80px;
+        }
+
+        .slide-4 .tag {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #fcd34d;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .slide-4 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .slide-4 .revenue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            width: 100%;
+        }
+
+        .slide-4 .revenue-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 28px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+        }
+
+        .slide-4 .revenue-item .left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .slide-4 .revenue-item .num {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fcd34d;
+        }
+
+        .slide-4 .revenue-item .name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .slide-4 .revenue-item .amount {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #4ade80;
+            white-space: nowrap;
+        }
+
+        /* ===== SLIDE 5 — TECH STACK ===== */
+        .slide-5 {
+            background: linear-gradient(160deg, #0a0f1a 0%, #111827 40%, #1e293b 100%);
+            text-align: left;
+            align-items: flex-start;
+            padding: 70px 80px;
+        }
+
+        .slide-5 .tag {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.25);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #7dd3fc;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .slide-5 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .slide-5 .stack-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .slide-5 .layer {
+            padding: 28px 30px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px;
+        }
+
+        .slide-5 .layer .layer-title {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .slide-5 .layer .layer-title.c1 { color: #a78bfa; }
+        .slide-5 .layer .layer-title.c2 { color: #f472b6; }
+        .slide-5 .layer .layer-title.c3 { color: #22d3ee; }
+        .slide-5 .layer .layer-title.c4 { color: #fbbf24; }
+
+        .slide-5 .layer .tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .slide-5 .layer .tool-chip {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+
+        /* ===== SLIDE 6 — CASE STUDIES ===== */
+        .slide-6 {
+            background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            text-align: left;
+            align-items: flex-start;
+            padding: 70px 80px;
+        }
+
+        .slide-6 .tag {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(244, 114, 182, 0.1);
+            border: 1px solid rgba(244, 114, 182, 0.25);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #f9a8d4;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .slide-6 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .slide-6 .cases {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .slide-6 .case-card {
+            padding: 28px 30px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .slide-6 .case-card .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .slide-6 .case-card .info h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .slide-6 .case-card .info .meta {
+            font-size: 17px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .slide-6 .case-card .info .meta .highlight {
+            color: #4ade80;
+            font-weight: 700;
+        }
+
+        /* ===== SLIDE 7 — 7 PRINCIPLES ===== */
+        .slide-7 {
+            background: linear-gradient(160deg, #0c1220 0%, #1a1145 40%, #1e1b4b 100%);
+            text-align: left;
+            align-items: flex-start;
+            padding: 70px 80px;
+        }
+
+        .slide-7 .tag {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #c4b5fd;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .slide-7 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 44px;
+            font-weight: 700;
+            margin-bottom: 36px;
+            color: #fff;
+        }
+
+        .slide-7 .principles {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .slide-7 .principle {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            padding: 20px 24px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+        }
+
+        .slide-7 .principle .p-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 40px;
+            text-align: center;
+        }
+
+        .slide-7 .principle .p-text {
+            font-size: 21px;
+            font-weight: 600;
+            color: #e2e8f0;
+            line-height: 1.4;
+        }
+
+        .slide-7 .principle .p-text span {
+            color: #94a3b8;
+            font-weight: 400;
+            font-size: 18px;
+        }
+
+        /* ===== SLIDE 8 — MISTAKES ===== */
+        .slide-8 {
+            background: linear-gradient(160deg, #1a0000 0%, #1c1917 40%, #1e1b4b 100%);
+            text-align: left;
+            align-items: flex-start;
+            padding: 70px 80px;
+        }
+
+        .slide-8 .tag {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #fca5a5;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .slide-8 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .slide-8 .mistakes {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .slide-8 .mistake {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 20px 24px;
+            background: rgba(239, 68, 68, 0.04);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            border-radius: 14px;
+        }
+
+        .slide-8 .mistake .x-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #ef4444;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .slide-8 .mistake .m-text {
+            font-size: 21px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        /* ===== SLIDE 9 — COST ===== */
+        .slide-9 {
+            background: linear-gradient(160deg, #0f172a 0%, #064e3b 50%, #1e1b4b 100%);
+            text-align: left;
+            align-items: flex-start;
+            padding: 70px 80px;
+        }
+
+        .slide-9 .tag {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #6ee7b7;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .slide-9 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .slide-9 .tiers {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 100%;
+        }
+
+        .slide-9 .tier {
+            padding: 30px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
+        }
+
+        .slide-9 .tier .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .slide-9 .tier .tier-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .slide-9 .tier .tier-price {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #4ade80;
+        }
+
+        .slide-9 .tier .tier-desc {
+            font-size: 18px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .slide-9 .tier.featured {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        /* ===== SLIDE 10 — CTA ===== */
+        .slide-10 {
+            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            text-align: center;
+        }
+
+        .slide-10::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .slide-10 .emoji-big {
+            font-size: 100px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-10 h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #fff 30%, #c4b5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-10 .takeaway {
+            font-size: 26px;
+            color: #94a3b8;
+            line-height: 1.7;
+            max-width: 700px;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 50px;
+        }
+
+        .slide-10 .action-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-10 .action-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 36px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            font-size: 22px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        /* ===== SCALE FOR BROWSER ===== */
+        .slide-wrapper {
+            transform: scale(0.55);
+            transform-origin: top center;
+            margin-bottom: -560px;
+        }
+
+        @media (max-width: 768px) {
+            .slide-wrapper {
+                transform: scale(0.3);
+                margin-bottom: -900px;
+            }
+            .download-btn {
+                right: -10px;
+                top: -40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <h1>🤖 AI Influencer Model — Instagram Carousel</h1>
+        <p>10 beautifully designed slides ready for Instagram. Right-click any slide → "Save image as" or use the download buttons.</p>
+        <div class="instructions">
+            💡 Each slide is 1080×1350px — perfect Instagram carousel size
+        </div>
+        <br>
+        <button class="download-all-btn" onclick="downloadAll()">⬇️ Download All Slides</button>
+    </div>
+
+    <div class="slides-container">
+
+        <!-- SLIDE 1 — COVER -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 1 of 10 — Cover</div>
+            <div class="slide slide-1" id="slide-1">
+                <div class="slide-counter">1 / 10</div>
+                <div class="emoji-top">🤖</div>
+                <h1>The AI<br>Influencer<br>Model</h1>
+                <div class="subtitle">How businesses are building million-dollar virtual personas — without a single human in front of the camera.</div>
+                <div class="cta">Swipe → to learn the complete playbook ➡️</div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2 — WHAT IS IT -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 2 of 10 — Definition</div>
+            <div class="slide slide-2" id="slide-2">
+                <div class="slide-counter">2 / 10</div>
+                <div class="tag">The Basics</div>
+                <h2>What Exactly Is an AI Influencer?</h2>
+                <div class="definition">
+                    A fully computer-generated digital character that operates on social media as a content creator, brand ambassador, or public personality — powered entirely by AI.
+                </div>
+                <div class="features">
+                    <div class="feature">
+                        <div class="icon">🎭</div>
+                        <div class="text">100% synthetic — no real person behind the face</div>
+                    </div>
+                    <div class="feature">
+                        <div class="icon">🎛️</div>
+                        <div class="text">Fully controllable — every word & look is designed</div>
+                    </div>
+                    <div class="feature">
+                        <div class="icon">🔄</div>
+                        <div class="text">24/7 content production across any language</div>
+                    </div>
+                    <div class="feature">
+                        <div class="icon">🛡️</div>
+                        <div class="text">Zero scandals, burnout, or contract disputes</div>
+                    </div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3 — MARKET SIZE -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 3 of 10 — Market</div>
+            <div class="slide slide-3" id="slide-3">
+                <div class="slide-counter">3 / 10</div>
+                <div class="tag">💰 Market Data</div>
+                <h2>The Numbers Don't Lie</h2>
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="number green">$11.4B</div>
+                        <div class="label">Market Size<br>(2025)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number purple">$62.7B</div>
+                        <div class="label">Projected by<br>2030</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number blue">3–5×</div>
+                        <div class="label">Higher Engagement<br>vs Human Creators</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number pink">70%</div>
+                        <div class="label">Lower Cost<br>Than Human Influencers</div>
+                    </div>
+                </div>
+                <div style="margin-top: 40px; padding: 24px; background: rgba(74, 222, 128, 0.06); border: 1px solid rgba(74, 222, 128, 0.15); border-radius: 16px; width: 100%;">
+                    <div style="font-size: 20px; color: #86efac; font-weight: 600; text-align: center;">
+                        📈 Growing at 15–40% CAGR through 2030
+                    </div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4 — MONETIZATION -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 4 of 10 — Revenue</div>
+            <div class="slide slide-4" id="slide-4">
+                <div class="slide-counter">4 / 10</div>
+                <div class="tag">💰 Revenue</div>
+                <h2>6 Ways AI Influencers Make Money</h2>
+                <div class="revenue-list">
+                    <div class="revenue-item">
+                        <div class="left">
+                            <div class="num">1</div>
+                            <div class="name">Brand Partnerships</div>
+                        </div>
+                        <div class="amount">$500–$50K/post</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div class="left">
+                            <div class="num">2</div>
+                            <div class="name">IP & Character Licensing</div>
+                        </div>
+                        <div class="amount">$10K–$100K+/deal</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div class="left">
+                            <div class="num">3</div>
+                            <div class="name">Paid Courses & Programs</div>
+                        </div>
+                        <div class="amount">$5K–$50K/mo</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div class="left">
+                            <div class="num">4</div>
+                            <div class="name">Subscriptions (Patreon, etc.)</div>
+                        </div>
+                        <div class="amount">$2K–$20K/mo</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div class="left">
+                            <div class="num">5</div>
+                            <div class="name">Affiliate Marketing</div>
+                        </div>
+                        <div class="amount">$500–$5K/mo</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div class="left">
+                            <div class="num">6</div>
+                            <div class="name">B2B Agency (Build for Others)</div>
+                        </div>
+                        <div class="amount">$5K–$30K/mo</div>
+                    </div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5 — TECH STACK -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 5 of 10 — Tools</div>
+            <div class="slide slide-5" id="slide-5">
+                <div class="slide-counter">5 / 10</div>
+                <div class="tag">🛠️ Tech Stack</div>
+                <h2>The Tools You Need</h2>
+                <div class="stack-layers">
+                    <div class="layer">
+                        <div class="layer-title c1">Layer 1 — Visual Identity (The Face)</div>
+                        <div class="tools">
+                            <div class="tool-chip">Stable Diffusion + LoRA</div>
+                            <div class="tool-chip">Midjourney</div>
+                            <div class="tool-chip">ComfyUI</div>
+                        </div>
+                    </div>
+                    <div class="layer">
+                        <div class="layer-title c2">Layer 2 — Video & Animation</div>
+                        <div class="tools">
+                            <div class="tool-chip">HeyGen</div>
+                            <div class="tool-chip">Kling</div>
+                            <div class="tool-chip">Runway</div>
+                            <div class="tool-chip">Synthesia</div>
+                        </div>
+                    </div>
+                    <div class="layer">
+                        <div class="layer-title c3">Layer 3 — Brain & Voice</div>
+                        <div class="tools">
+                            <div class="tool-chip">Claude / ChatGPT</div>
+                            <div class="tool-chip">ElevenLabs</div>
+                            <div class="tool-chip">System Prompts</div>
+                        </div>
+                    </div>
+                    <div class="layer">
+                        <div class="layer-title c4">Layer 4 — Pipeline & Management</div>
+                        <div class="tools">
+                            <div class="tool-chip">Notion</div>
+                            <div class="tool-chip">Buffer</div>
+                            <div class="tool-chip">CapCut</div>
+                            <div class="tool-chip">Zapier</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6 — CASE STUDIES -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 6 of 10 — Case Studies</div>
+            <div class="slide slide-6" id="slide-6">
+                <div class="slide-counter">6 / 10</div>
+                <div class="tag">🏆 Case Studies</div>
+                <h2>Who's Already Winning?</h2>
+                <div class="cases">
+                    <div class="case-card">
+                        <div class="avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">👩🏻</div>
+                        <div class="info">
+                            <h3>Lil Miquela</h3>
+                            <div class="meta">2.7M+ followers · Prada, Calvin Klein, Samsung<br><span class="highlight">$10M+/year revenue</span></div>
+                        </div>
+                    </div>
+                    <div class="case-card">
+                        <div class="avatar" style="background: linear-gradient(135deg, #ec4899, #f472b6);">👩🏼</div>
+                        <div class="info">
+                            <h3>Aitana López</h3>
+                            <div class="meta">300K+ followers · Built by 2-person team<br><span class="highlight">€10,000/month with no VC funding</span></div>
+                        </div>
+                    </div>
+                    <div class="case-card">
+                        <div class="avatar" style="background: linear-gradient(135deg, #22c55e, #34d399);">👩🏽</div>
+                        <div class="info">
+                            <h3>Lu do Magalu</h3>
+                            <div class="meta">7M+ followers · Corporate brand mascot for Magazine Luiza<br><span class="highlight">Millions in annual attributable revenue</span></div>
+                        </div>
+                    </div>
+                    <div class="case-card">
+                        <div class="avatar" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">👩🏻‍💻</div>
+                        <div class="info">
+                            <h3>Samsung "Rae"</h3>
+                            <div class="meta">Targeted Gen Z in Southeast Asia<br><span class="highlight">Drove massive product awareness for mobile launches</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7 — 7 PRINCIPLES -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 7 of 10 — Core Principles</div>
+            <div class="slide slide-7" id="slide-7">
+                <div class="slide-counter">7 / 10</div>
+                <div class="tag">⭐ Core Framework</div>
+                <h2>7 Non-Negotiable Principles</h2>
+                <div class="principles">
+                    <div class="principle">
+                        <div class="p-icon">🎯</div>
+                        <div class="p-text">Niche Down Ruthlessly <span>— give them a JOB, not just a face</span></div>
+                    </div>
+                    <div class="principle">
+                        <div class="p-icon">🔒</div>
+                        <div class="p-text">Lock Visual Consistency <span>— train a LoRA, use seed libraries</span></div>
+                    </div>
+                    <div class="principle">
+                        <div class="p-icon">📢</div>
+                        <div class="p-text">Radical Transparency <span>— never hide the AI nature</span></div>
+                    </div>
+                    <div class="principle">
+                        <div class="p-icon">💰</div>
+                        <div class="p-text">Own Your Revenue <span>— products > brand deals</span></div>
+                    </div>
+                    <div class="principle">
+                        <div class="p-icon">🧠</div>
+                        <div class="p-text">Think Like a Media Company <span>— build IP, not just posts</span></div>
+                    </div>
+                    <div class="principle">
+                        <div class="p-icon">📊</div>
+                        <div class="p-text">Data-Driven Decisions <span>— metrics guide content, not gut feeling</span></div>
+                    </div>
+                    <div class="principle">
+                        <div class="p-icon">⚖️</div>
+                        <div class="p-text">Legal Compliance First <span>— double disclosure is mandatory</span></div>
+                    </div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8 — MISTAKES -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 8 of 10 — Mistakes</div>
+            <div class="slide slide-8" id="slide-8">
+                <div class="slide-counter">8 / 10</div>
+                <div class="tag">⚠️ Warning</div>
+                <h2>6 Deadly Mistakes<br>to Avoid</h2>
+                <div class="mistakes">
+                    <div class="mistake">
+                        <div class="x-icon">✕</div>
+                        <div class="m-text">Trying to pass AI off as a real human</div>
+                    </div>
+                    <div class="mistake">
+                        <div class="x-icon">✕</div>
+                        <div class="m-text">Generic "pretty face + motivational quotes"</div>
+                    </div>
+                    <div class="mistake">
+                        <div class="x-icon">✕</div>
+                        <div class="m-text">Inconsistent face across different posts</div>
+                    </div>
+                    <div class="mistake">
+                        <div class="x-icon">✕</div>
+                        <div class="m-text">Treating it as "passive income" — it's a real business</div>
+                    </div>
+                    <div class="mistake">
+                        <div class="x-icon">✕</div>
+                        <div class="m-text">Relying only on brand deals for revenue</div>
+                    </div>
+                    <div class="mistake">
+                        <div class="x-icon">✕</div>
+                        <div class="m-text">Same content copy-pasted across all platforms</div>
+                    </div>
+                </div>
+                <div style="margin-top: 30px; padding: 20px 24px; background: rgba(74, 222, 128, 0.06); border: 1px solid rgba(74, 222, 128, 0.15); border-radius: 14px; width: 100%;">
+                    <div style="font-size: 20px; color: #86efac; font-weight: 600; text-align: center;">
+                        ✅ Fix: Be transparent, niche down, diversify revenue, and build community
+                    </div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9 — COST -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 9 of 10 — Investment</div>
+            <div class="slide slide-9" id="slide-9">
+                <div class="slide-counter">9 / 10</div>
+                <div class="tag">💸 Investment</div>
+                <h2>What It Actually Costs</h2>
+                <div class="tiers">
+                    <div class="tier featured">
+                        <div class="tier-header">
+                            <div class="tier-name">🚀 Solo Creator</div>
+                            <div class="tier-price">$0–315/mo</div>
+                        </div>
+                        <div class="tier-desc">Free tools (Stable Diffusion local) + Canva free + CapCut. Perfect for testing the model with zero risk.</div>
+                    </div>
+                    <div class="tier">
+                        <div class="tier-header">
+                            <div class="tier-name">📈 Small Agency / Brand</div>
+                            <div class="tier-price">$1K–3.7K/mo</div>
+                        </div>
+                        <div class="tier-desc">Full tool stack + part-time strategist + community manager. For serious business operations.</div>
+                    </div>
+                    <div class="tier">
+                        <div class="tier-header">
+                            <div class="tier-name">🏢 Enterprise</div>
+                            <div class="tier-price">$8K–34K/mo</div>
+                        </div>
+                        <div class="tier-desc">Full production team + premium tools + legal compliance + paid promotion budget.</div>
+                    </div>
+                </div>
+                <div style="margin-top: 24px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 14px; text-align: center;">
+                    <div style="font-size: 20px; color: #6ee7b7; font-weight: 600;">
+                        💡 Start lean at $0. Scale only when revenue justifies it.
+                    </div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10 — CTA -->
+        <div class="slide-wrapper">
+            <div class="slide-number-label">Slide 10 of 10 — Takeaway</div>
+            <div class="slide slide-10" id="slide-10">
+                <div class="slide-counter">10 / 10</div>
+                <div class="emoji-big">💡</div>
+                <h2>The Future Is<br>Already Here</h2>
+                <div class="takeaway">
+                    AI influencers aren't a gimmick — they're a $11B+ industry growing 40% year-over-year. The window to start is NOW.
+                </div>
+                <div class="action-items">
+                    <div class="action-item">📌 Save this for later</div>
+                    <div class="action-item">🔄 Share with someone building online</div>
+                    <div class="action-item">💬 Comment your niche idea below!</div>
+                </div>
+                <div class="watermark">@your_handle</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- html2canvas CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        async function downloadSlide(slideId, filename) {
+            const slide = document.getElementById(slideId);
+            const canvas = await html2canvas(slide, {
+                width: 1080,
+                height: 1350,
+                scale: 1,
+                useCORS: true,
+                backgroundColor: null,
+            });
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        async function downloadAll() {
+            const btn = document.querySelector('.download-all-btn');
+            btn.textContent = '⏳ Generating slides...';
+            btn.disabled = true;
+
+            for (let i = 1; i <= 10; i++) {
+                await downloadSlide(`slide-${i}`, `AI_Influencer_Slide_${i}.png`);
+                btn.textContent = `⏳ Downloaded ${i}/10...`;
+                await new Promise(r => setTimeout(r, 500));
+            }
+
+            btn.textContent = '✅ All 10 slides downloaded!';
+            setTimeout(() => {
+                btn.textContent = '⬇️ Download All Slides';
+                btn.disabled = false;
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
