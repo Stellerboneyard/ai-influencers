@@ -1,0 +1,1 @@
+This is the repo- about  ai infuencer Model and how it works.
